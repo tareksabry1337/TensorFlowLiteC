@@ -26,15 +26,11 @@ jobs:
             bazelisk-cache: true
             disk-cache: ${{ github.workflow }}
             repository-cache: true
-        run: |
-          bazel --version
 
       - name: Build TensorFlowLiteC on Simulator
         run: |
-          cd ${{ github.workspace }}/tensorflow
-          ls
+          bazel --version
 
       - name: Build TensorFlowLiteC on Device
         run: |
-          cd ${{ github.workspace }}/tensorflow
-          ls
+          bazel --version
