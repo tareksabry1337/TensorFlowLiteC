@@ -31,19 +31,34 @@ jobs:
           
       - name: Install expect
         run: brew install expect
+
+      - name: Configure TensorFlow
+        run: |
+          expect -c '
+            spawn ./configure
+            expect "Please specify the location of python*"
+            send "\r"
+            expect "Please input the desired Python library path to use*"
+            send "\r"
+            expect "Do you wish to build TensorFlow with ROCm support*"
+            send "N\r"
+            expect "Do you wish to build TensorFlow with CUDA support*"
+            send "N\r"
+            expect "Please specify optimization flags to use during compilation*"
+            send "\r"
+            expect "Would you like to interactively configure ./WORKSPACE for Android builds?*"
+            send "N\r"
+            expect "Do you wish to build TensorFlow with iOS support?*"
+            send "y\r"
+            interact
+          '
         
       - name: Build TensorFlowLiteC on Simulator
         run: |
           cd ${{ github.workspace }}/tensorflow
-          spawn ./configure
-          expect "Do you wish to build TensorFlow with iOS support? [y/N]:"
-          send "y\r"
           bazel --version
 
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
-          spawn ./configure
-          expect "Do you wish to build TensorFlow with iOS support? [y/N]:"
-          send "y\r"
           bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework
