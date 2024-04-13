@@ -21,15 +21,13 @@ jobs:
       - name: Clone TensorFlow Repository
         run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
 
-      - name: Parse .bazelversion
-        run: |
-          BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
-          echo $BAZEL_VERSION > bazel_version.txt
-
       - name: Install Bazel
         run: |
-          brew install bazel@$(cat bazel_version.txt)
-          brew link --overwrite bazel@$(cat bazel_version.txt)
+          export BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
+          curl -fLO "https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-installer-darwin-x86_64.sh"
+          chmod +x "bazel-$BAZEL_VERSION-installer-darwin-x86_64.sh"
+          ./bazel-$BAZEL_VERSION-installer-darwin-x86_64.sh
+          bazel --version
 
       - name: Build TensorFlowLiteC on Simulator
         run: |
