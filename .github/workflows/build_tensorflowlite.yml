@@ -6,18 +6,23 @@ on:
       - main
 
 jobs:
-  build_simulator:
-    name: Build TensorFlowLite on Simulator
-    runs-on: macos-latest
+  clone_and_build:
+    name: Clone TensorFlow and Build TensorFlowLite
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-  build_device:
-    name: Build TensorFlowLite on Device
-    runs-on: macos-latest
+      - name: Clone TensorFlow Repository
+        run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Build TensorFlowLite on Simulator
+        run: |
+          cd ${{ github.workspace }}/tensorflow
+          ls
+
+      - name: Build TensorFlowLite on Device
+        run: |
+          cd ${{ github.workspace }}/tensorflow
+          ls
