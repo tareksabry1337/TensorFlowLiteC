@@ -11,11 +11,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
         
       - name: Clone TensorFlow Repository
-        run: which bazel
+        run: bazel --version
         
 #      - name: Set Bazel version
 #        run: |
