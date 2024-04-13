@@ -37,4 +37,5 @@ jobs:
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
+          bazel query "//tensorflow/lite/ios:*
           bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework
