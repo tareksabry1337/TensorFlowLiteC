@@ -17,6 +17,17 @@ jobs:
       - name: Clone TensorFlow Repository
         run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
 
+      - name: Parse .bazelversion
+        run: |
+          BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
+          echo "Bazel version: $BAZEL_VERSION"
+          echo "::set-output name=bazel_version::$BAZEL_VERSION"
+
+      - name: Install Bazel
+        uses: bahmutov/setup-bazel@v1
+        with:
+          bazel-version: ${{ steps.parse_bazelversion.outputs.bazel_version }}
+
       - name: Build TensorFlowLite on Simulator
         run: |
           cd ${{ github.workspace }}/tensorflow
