@@ -20,13 +20,12 @@ jobs:
       - name: Parse .bazelversion
         run: |
           BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
-          echo "Bazel version: $BAZEL_VERSION"
-          echo "::set-output name=bazel_version::$BAZEL_VERSION"
+          echo "Bazel version: $BAZEL_VERSION" > bazel_version.txt
 
       - name: Install Bazel
-        uses: ConorMacBride/install-package@v1
-        with:
-          brew: bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
+        run: |
+          brew install bazel@$(cat bazel_version.txt)
+          brew link --overwrite bazel@$(cat bazel_version.txt)
 
       - name: Build TensorFlowLiteC on Simulator
         run: |
