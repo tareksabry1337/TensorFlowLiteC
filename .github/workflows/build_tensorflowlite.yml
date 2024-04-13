@@ -1,0 +1,23 @@
+name: Build TensorFlowLite
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_simulator:
+    name: Build TensorFlowLite on Simulator
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+  build_device:
+    name: Build TensorFlowLite on Device
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
