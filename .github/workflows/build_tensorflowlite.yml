@@ -11,8 +11,15 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Clone TensorFlow Repository
+        run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
+
       - name: Setup Bazel Version
-        run: echo "USE_BAZEL_VERSION=6.5.0" >> $GITHUB_ENV
+        run: |
+          echo "USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)" >> $GITHUB_ENV
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
@@ -20,35 +27,12 @@ jobs:
           bazelisk-cache: true
           disk-cache: ${{ github.workflow }}-2
           repository-cache: ${{ github.workflow }}-2
-          cache-version: 3
+          cache-version: 4
 
-      - name: Which Bazel
+      - name: Build TensorFlowLiteC on Simulator
         run: |
-          echo $USE_BAZEL_VERSION
-          which bazel && bazel --version
-#      - name: Checkout Repository
-#        uses: actions/checkout@v2
-        
-#      - name: Clone TensorFlow Repository
-#        run: which brew && which bazel && bazel --version
-        
-#      - name: Set Bazel version
-#        run: |
-#          cd ${{ github.workspace }}/tensorflow
-#          USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
-#          echo Installing $USE_BAZEL_VERSION
-#          
-#      - name: Install Bazel
-#        uses: bazel-contrib/setup-bazel@0.8.1
-#        with:
-#            bazelisk-cache: true
-#            disk-cache: ${{ github.workflow }}-1
-#            repository-cache: true
-#
-#      - name: Build TensorFlowLiteC on Simulator
-#        run: |
-#          bazel --version
-#
-#      - name: Build TensorFlowLiteC on Device
-#        run: |
-#          bazel --version
+          bazel --version
+
+      - name: Build TensorFlowLiteC on Device
+        run: |
+          bazel --version
