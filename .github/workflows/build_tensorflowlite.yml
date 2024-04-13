@@ -34,6 +34,7 @@ jobs:
 
       - name: Configure TensorFlow
         run: |
+          cd ${{ github.workspace }}/tensorflow
           expect -c '
             spawn ./configure
             expect "Please specify the location of python*"
