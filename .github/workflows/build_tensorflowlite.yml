@@ -28,14 +28,22 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
           cache-version: 5
-
+          
+      - name: Install expect
+        run: brew install expect
+        
       - name: Build TensorFlowLiteC on Simulator
         run: |
           cd ${{ github.workspace }}/tensorflow
+          spawn ./configure
+          expect "Do you wish to build TensorFlow with iOS support? [y/N]:"
+          send "y\r"
           bazel --version
 
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
-          ./configure
+          spawn ./configure
+          expect "Do you wish to build TensorFlow with iOS support? [y/N]:"
+          send "y\r"
           bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework
