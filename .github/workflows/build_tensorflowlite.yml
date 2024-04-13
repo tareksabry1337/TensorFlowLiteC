@@ -62,4 +62,10 @@ jobs:
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
-          bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework
+          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
+          zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
+          unzip -o $zip_file -d ${{ github.workspace }}
+          cd ${{ github.workspace }}
+          cp Info-TensorFlowLiteC.plist TensorFlowLiteC.framework/Info.plist
+          cd TensorFlowLiteC.framework && ls
+
