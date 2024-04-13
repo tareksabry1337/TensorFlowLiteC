@@ -12,18 +12,18 @@ jobs:
 
     steps:
       - name: Setup Bazel Version
-        run: |
-          USE_BAZEL_VERSION=6.5.0
-          
+        run: echo "USE_BAZEL_VERSION=6.5.0" >> $GITHUB_ENV
+
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
-            bazelisk-cache: ${{ github.workflow }}-2
-            disk-cache: ${{ github.workflow }}-2
-            repository-cache: ${{ github.workflow }}-2
-            
+          bazelisk-cache: ${{ github.workflow }}-2
+          disk-cache: ${{ github.workflow }}-2
+          repository-cache: ${{ github.workflow }}-2
+
       - name: Which Bazel
         run: |
+          echo $USE_BAZEL_VERSION
           which bazel && bazel --version
 #      - name: Checkout Repository
 #        uses: actions/checkout@v2
