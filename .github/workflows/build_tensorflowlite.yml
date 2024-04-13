@@ -17,9 +17,10 @@ jobs:
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
-          bazelisk-cache: ${{ github.workflow }}-2
+          bazelisk-cache: true
           disk-cache: ${{ github.workflow }}-2
           repository-cache: ${{ github.workflow }}-2
+          cache-version: 3
 
       - name: Which Bazel
         run: |
