@@ -8,7 +8,7 @@ on:
 jobs:
   clone_and_build:
     name: Clone TensorFlow and Build TensorFlowLiteC / TensorFlowLiteCCoreML
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
@@ -27,7 +27,7 @@ jobs:
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
             bazelisk-cache: true
-            disk-cache: ${{ github.workflow }}
+            disk-cache: ${{ github.workflow }}-1
             repository-cache: true
 
       - name: Build TensorFlowLiteC on Simulator
