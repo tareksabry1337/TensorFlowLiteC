@@ -15,7 +15,7 @@ jobs:
 #        uses: actions/checkout@v2
         
       - name: Clone TensorFlow Repository
-        run: bazel --version
+        run: which brew && which bazel && bazel --version
         
 #      - name: Set Bazel version
 #        run: |
