@@ -25,9 +25,9 @@ jobs:
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}-2
-          repository-cache: ${{ github.workflow }}-2
-          cache-version: 4
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+          cache-version: 5
 
       - name: Build TensorFlowLiteC on Simulator
         run: |
@@ -35,4 +35,4 @@ jobs:
 
       - name: Build TensorFlowLiteC on Device
         run: |
-          bazel --version
+          bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework
