@@ -31,6 +31,7 @@ jobs:
 
       - name: Build TensorFlowLiteC on Simulator
         run: |
+          cd ${{ github.workspace }}/tensorflow
           bazel --version
 
       - name: Build TensorFlowLiteC on Device
