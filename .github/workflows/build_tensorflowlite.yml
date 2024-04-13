@@ -1,4 +1,4 @@
-name: Build TensorFlowLite
+name: Build TensorFlowLiteC
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   clone_and_build:
-    name: Clone TensorFlow and Build TensorFlowLite
+    name: Clone TensorFlow and Build TensorFlowLiteC / TensorFlowLiteCCoreML
     runs-on: ubuntu-latest
 
     steps:
@@ -24,16 +24,16 @@ jobs:
           echo "::set-output name=bazel_version::$BAZEL_VERSION"
 
       - name: Install Bazel
-        run: |
-          brew install bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
-          brew link --overwrite bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
+        uses: ConorMacBride/install-package@v1
+        with:
+          brew: bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
 
-      - name: Build TensorFlowLite on Simulator
+      - name: Build TensorFlowLiteC on Simulator
         run: |
           cd ${{ github.workspace }}/tensorflow
           ls
 
-      - name: Build TensorFlowLite on Device
+      - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
           ls
