@@ -13,11 +13,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
+        
       - name: Clone TensorFlow Repository
         run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
 
