@@ -17,10 +17,11 @@ jobs:
       - name: Clone TensorFlow Repository
         run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
         
-      - name: Navigate to cloned repository
+      - name: Set Bazel version
         run: |
           cd ${{ github.workspace }}/tensorflow
           USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
+          echo Installing $USE_BAZEL_VERSION
           
       - name: Install Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
