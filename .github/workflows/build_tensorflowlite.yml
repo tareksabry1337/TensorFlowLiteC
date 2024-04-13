@@ -24,9 +24,9 @@ jobs:
           echo "::set-output name=bazel_version::$BAZEL_VERSION"
 
       - name: Install Bazel
-        uses: bahmutov/setup-bazel@v1
-        with:
-          bazel-version: ${{ steps.parse_bazelversion.outputs.bazel_version }}
+        run: |
+          brew install bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
+          brew link --overwrite bazel@${{ steps.parse_bazelversion.outputs.bazel_version }}
 
       - name: Build TensorFlowLite on Simulator
         run: |
