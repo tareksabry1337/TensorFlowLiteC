@@ -21,6 +21,10 @@ jobs:
             bazelisk-cache: ${{ github.workflow }}-2
             disk-cache: ${{ github.workflow }}-2
             repository-cache: ${{ github.workflow }}-2
+            
+      - name: Which Bazel
+        run: |
+          which bazel && bazel --version
 #      - name: Checkout Repository
 #        uses: actions/checkout@v2
         
