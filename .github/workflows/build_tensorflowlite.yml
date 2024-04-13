@@ -24,7 +24,7 @@ jobs:
       - name: Parse .bazelversion
         run: |
           BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)
-          echo "Bazel version: $BAZEL_VERSION" > bazel_version.txt
+          echo $BAZEL_VERSION > bazel_version.txt
 
       - name: Install Bazel
         run: |
