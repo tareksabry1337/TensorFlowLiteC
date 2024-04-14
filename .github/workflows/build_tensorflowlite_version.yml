@@ -20,7 +20,7 @@ jobs:
         
       - name: Check if Tag Exists and Build
         run: |
-          if git rev-parse "refs/tags/v${{ github.event.inputs.release_version }}" >/dev/null 2>&1; then
+          if git rev-parse "refs/tags/${{ github.event.inputs.release_version }}" >/dev/null 2>&1; then
             echo "Tag exists for ${{ github.event.inputs.release_version }}. Exiting early."
             exit 0
           else
@@ -40,7 +40,7 @@ jobs:
           cd ${{ github.workspace }}/App
           
           cp -f Podfile.version Podfile
-          sed -i '' -e "s|{{VERSION}}|${{ github.event.inputs.release_version }}|g" Podfile.swift
+          sed -i '' -e "s|{{VERSION}}|${{ github.event.inputs.release_version }}|g" Podfile
           
           pod install
 
