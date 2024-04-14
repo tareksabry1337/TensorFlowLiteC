@@ -17,14 +17,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-            fetch-tags: true
         
       - name: Check if Tag Exists and Build
+        id: check-tag
         uses: mukunku/tag-exists-action@v1.6.0
-          id: check-tag
-          with:
-            tag: ${{ github.event.inputs.release_version }}
+        with:
+          tag: ${{ github.event.inputs.release_version }}
         
       - name: Prepare XCFramework Directory
         if: steps.check-tag.outputs.exists == 'false'
