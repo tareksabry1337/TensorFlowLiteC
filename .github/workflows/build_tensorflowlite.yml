@@ -109,6 +109,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TENSORFLOW_LITE_C_API_URL=$(gh release view 2.14.0 --json assets -q '.assets[] | select (.name == "TensorFlowLiteC.xcframework.zip").apiUrl')
+          echo $TENSORFLOW_LITE_C_API_URL
           echo "TENSORFLOW_LITE_C_API_URL=$TENSORFLOW_LITE_C_API_URL" >> $GITHUB_ENV
       
 
