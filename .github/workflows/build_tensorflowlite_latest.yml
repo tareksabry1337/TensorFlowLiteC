@@ -65,6 +65,7 @@ jobs:
           
       - name: Clone TensorFlow Repository
         uses: actions/checkout@v4
+        if: env.RELEASE_VERSION
         with:
           repository: 'tensorflow/tensorflow'
           path: '${{ github.workspace }}/tensorflow'
@@ -77,6 +78,7 @@ jobs:
           
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
+        if: env.USE_BAZEL_VERSION
         with:
           bazelisk-cache: true
           disk-cache: '${{ github.workflow }}'
@@ -84,9 +86,11 @@ jobs:
           cache-version: 5
           
       - name: Install expect
+        if: env.USE_BAZEL_VERSION
         run: brew install expect
         
       - name: Configure TensorFlow
+        if: env.USE_BAZEL_VERSION
         run: |
           cd ${{ github.workspace }}/tensorflow
           expect -c '
@@ -109,6 +113,7 @@ jobs:
           '
           
       - name: Build TensorFlowLiteC on Device
+        if: env.USE_BAZEL_VERSION
         run: |
           cd ${{ github.workspace }}/tensorflow
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
@@ -117,6 +122,7 @@ jobs:
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
           
       - name: Build TensorFlowLiteCCoreML on Device
+        if: env.USE_BAZEL_VERSION
         run: |
           cd ${{ github.workspace }}/tensorflow
           git apply ../build_coreml_statically.patch
@@ -126,6 +132,7 @@ jobs:
           cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Device/TensorFlowLiteCCoreML.framework/Info.plist
           
       - name: Create XCFramework
+        if: env.USE_BAZEL_VERSION
         run: |
           cd ${{ github.workspace }}/TensorFlowLiteC
           
@@ -152,6 +159,7 @@ jobs:
           echo "TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM=$(xcrun swift package compute-checksum TensorFlowLiteCCoreML.xcframework.zip)" >> $GITHUB_ENV
           
       - name: Upload Release
+        if: env.USE_BAZEL_VERSION
         uses: svenstaro/upload-release-action@v2
         with:
           file_glob: true
@@ -160,6 +168,7 @@ jobs:
           overwrite: true
           
       - name: Get API URL
+        if: env.USE_BAZEL_VERSION
         env:
           GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
@@ -169,6 +178,7 @@ jobs:
           echo "TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$TENSOR_FLOW_LITE_C_CORE_ML_API_URL.zip" >> $GITHUB_ENV
           
       - name: Update Package.swift
+        if: env.USE_BAZEL_VERSION
         run: |
           cp -f Package.swift.in Package.swift
           sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_API_URL }}|g" Package.swift
