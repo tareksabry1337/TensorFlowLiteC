@@ -144,8 +144,14 @@ jobs:
           TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$(gh release view 2.14.0 --json assets -q '.assets[] | select (.name == "TensorFlowLiteCCoreML.xcframework.zip").apiUrl')
           echo "TENSOR_FLOW_LITE_C_API_URL=$TENSOR_FLOW_LITE_C_API_URL" >> $GITHUB_ENV
           echo "TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$TENSOR_FLOW_LITE_C_CORE_ML_API_URL" >> $GITHUB_ENV
-          echo $TENSOR_FLOW_LITE_C_API_URL.zip
-          echo ${{ env.TENSOR_FLOW_LITE_C_CHECKSUM }}
-          echo $TENSOR_FLOW_LITE_C_CORE_ML_API_URL.zip
-          echo ${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}
-          echo Done
+          
+      - name: Update Package.swift
+        run: |
+          cp -f Package.template.swift Package.swift
+          sed -i "s|{{TENSOR_FLOW_LITE_C_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_API_URL }}|g" Package.swift
+          sed -i "s|{{TENSOR_FLOW_LITE_C_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CHECKSUM }}|g" Package.swift
+          sed -i "s|{{TENSOR_FLOW_LITE_C_CORE_ML_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_API_URL }}|g" Package.swift
+          sed -i "s|{{TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}|g" Package.swift
+          git add Package.swift
+          git commit -m "Update Package.swift"
+          git push
