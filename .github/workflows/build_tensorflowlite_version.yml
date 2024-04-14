@@ -23,6 +23,11 @@ jobs:
         uses: mukunku/tag-exists-action@v1.6.0
         with:
           tag: ${{ github.event.inputs.release_version }}
+          
+      - name: Create Release Branch
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          git checkout -b release/${{ github.event.inputs.release_version }}
         
       - name: Prepare XCFramework Directory
         if: steps.check-tag.outputs.exists == 'false'
@@ -174,6 +179,6 @@ jobs:
           sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}|g" Package.swift
           git add Package.swift
           git commit -m "Update Package.swift"
-          git push
-          git tag -m "Update release commit" -f -a ${{ env.RELEASE_VERSION }} $(git rev-parse origin/main)
+          git push -u origin/release/${{ github.event.inputs.release_version }}
+          git tag -m "Update release commit" -f -a ${{ env.RELEASE_VERSION }} $(git rev-parse origin/release/${{ github.event.inputs.release_version }})
           git push -f origin refs/tags/${{ env.RELEASE_VERSION }}
