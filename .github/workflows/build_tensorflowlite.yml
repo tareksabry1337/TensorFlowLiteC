@@ -99,7 +99,6 @@ jobs:
           echo "CHECKSUM=$(xcrun swift package compute-checksum TensorFlowLiteC.xcframework.zip)" >> $GITHUB_ENV
           
       - name: Upload Release
-        id: upload-release-asset
         uses: svenstaro/upload-release-action@v2
         with:
           file: TensorFlowLiteC.xcframework.zip
@@ -107,7 +106,9 @@ jobs:
           asset_name: TensorFlowLiteC.xcframework.zip
           overwrite: false
           
-      - name: Get Browser Download URL
-        run: echo "The browser download URL is ${{ steps.upload-release-asset.outputs.browser_download_url }}"
+      - name: Get API URL
+        run: |
+          echo "TENSORFLOW_LITE_C_API_URL=$(gh release view $RELEASE_VERSION --json assets -q '.assets[] | select (.name == “TensorFlowLiteC.xcframework.zip")' | jq -r '.apiUrl')" >> $GITHUB_ENV
+          echo $TENSORFLOW_LITE_C_API_URL
       
 
