@@ -1,6 +1,9 @@
 name: Build TensorFlowLiteC
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/60 */24 * * *' # Every 24 hours
   push:
     branches:
       - main
@@ -160,3 +163,5 @@ jobs:
           git add Package.swift
           git commit -m "Update Package.swift"
           git push
+          git tag -m "Update release commit" -f -a ${{ env.RELEASE_VERSION }} $(git rev-parse origin/main)
+          git push -f origin refs/tags/${{ env.RELEASE_VERSION }}
