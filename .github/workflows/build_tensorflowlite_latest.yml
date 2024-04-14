@@ -19,7 +19,7 @@ jobs:
       - name: Clone TensorFlow Repository
         uses: actions/checkout@v4
         with:
-          repository: 'https://github.com/tensorflow/tensorflow'
+          repository: 'tensorflow/tensorflow'
           path: '${{ github.workspace }}/tensorflow'
           fetch-tags: true
           
