@@ -22,6 +22,7 @@ jobs:
           repository: 'tensorflow/tensorflow'
           path: '${{ github.workspace }}/tensorflow'
           fetch-tags: true
+          fetch-depth: '0'
           
       - name: Setup Bazel Version
         run: |
