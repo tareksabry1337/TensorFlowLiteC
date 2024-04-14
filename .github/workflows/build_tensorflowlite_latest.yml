@@ -17,8 +17,12 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Clone TensorFlow Repository
-        run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
-        
+        uses: actions/checkout@v4
+        with:
+          repository: 'https://github.com/tensorflow/tensorflow'
+          path: '${{ github.workspace }}/tensorflow'
+          fetch-tags: true
+          
       - name: Setup Bazel Version
         run: |
           echo "USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)" >> $GITHUB_ENV
@@ -88,6 +92,7 @@ jobs:
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
+          git checkout v${{ env.RELEASE_VERSION }}
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
           unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
@@ -95,7 +100,8 @@ jobs:
           
       - name: Build TensorFlowLiteCCoreML on Device
         run: |
-          cd ${{ github.workspace }}/tensorflow
+          cd ${{ github.workspace }}/
+          git checkout v${{ env.RELEASE_VERSION }}
           git apply ../build_coreml_statically.patch
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework 2>&1 >/dev/null)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
