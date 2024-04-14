@@ -14,11 +14,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-tags: true
-#        
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
 #      - name: Clone TensorFlow Repository
 #        run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
 #
@@ -110,7 +108,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "TENSORFLOW_LITE_C_API_URL=$(gh release view $RELEASE_VERSION --json assets -q '.assets[] | select (.name == "TensorFlowLiteC.xcframework.zip")' | jq -r '.apiUrl')" >> $GITHUB_ENV
+          echo "TENSORFLOW_LITE_C_API_URL=$(gh release view 2.14.0 --json assets -q '.assets[] | select (.name == "TensorFlowLiteC.xcframework.zip")' | jq -r '.apiUrl')" >> $GITHUB_ENV
           echo "API URL: $TENSORFLOW_LITE_C_API_URL"
       
 
