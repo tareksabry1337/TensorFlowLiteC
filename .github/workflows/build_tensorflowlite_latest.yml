@@ -95,22 +95,24 @@ jobs:
         run: |
           cd ${{ github.workspace }}/tensorflow
           expect -c '
-            spawn ./configure
-            expect "Please specify the location of python*"
-            send "\r"
-            expect "Please input the desired Python library path to use*"
-            send "\r"
-            expect "Do you wish to build TensorFlow with ROCm support*"
-            send "N\r"
-            expect "Do you wish to build TensorFlow with CUDA support*"
-            send "N\r"
-            expect "Please specify optimization flags to use during compilation*"
-            send "\r"
-            expect "Would you like to interactively configure ./WORKSPACE for Android builds?*"
-            send "N\r"
-            expect "Do you wish to build TensorFlow with iOS support?*"
-            send "y\r"
-            interact
+              spawn ./configure
+              set ios_support_answered 0
+              expect {
+                  "Do you wish to build TensorFlow with iOS support*" {
+                      if {$ios_support_answered == 0} {
+                          send "y\r"
+                          set ios_support_answered 1
+                      }
+                      exp_continue
+                  }
+                  -re ".+" {
+                      send "\r"
+                      exp_continue
+                  }
+                  eof {
+                      exit
+                  }
+              }
           '
           
       - name: Build TensorFlowLiteC on Device
