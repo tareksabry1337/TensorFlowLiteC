@@ -79,17 +79,18 @@ jobs:
 
       - name: Build TensorFlowLiteC on Device
         run: |
-          cd ${{ github.workspace }}/tensorflow
-          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
-          zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
-          unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
-          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
+          echo "Should build on device"
+#          cd ${{ github.workspace }}/tensorflow
+#          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
+#          zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
+#          unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
+#          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
           
       - name: Create XCFramework
         run: |
           cd ${{ github.workspace }}/TensorFlowLiteC
           xcodebuild -create-xcframework \
-          -framework ./Device/TensorFlowLiteC.framework \
+          -framework ./Simulator/TensorFlowLiteC.framework \
           -framework ./Simulator/TensorFlowLiteC.framework \
           -output ${{ github.workspace }}/TensorFlowLiteC.xcframework
           cd ${{ github.workspace }}
