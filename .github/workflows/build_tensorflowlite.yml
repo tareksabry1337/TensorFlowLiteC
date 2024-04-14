@@ -69,6 +69,7 @@ jobs:
           grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
           git add last_synced_version.txt
           git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
+          # git push
 
       - name: Build TensorFlowLiteC on Device
         run: |
@@ -76,6 +77,6 @@ jobs:
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
           unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
-          cp Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
+          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
           find ${{ github.workspace }}/TensorFlowLiteC -type f
 
