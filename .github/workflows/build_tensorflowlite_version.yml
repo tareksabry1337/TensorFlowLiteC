@@ -14,8 +14,6 @@ jobs:
   clone_and_build:
     name: Clone TensorFlow and Build TensorFlowLiteC / TensorFlowLiteCCoreML
     runs-on: macos-latest
-    env:
-      SHELL: /bin/bash -eux
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
