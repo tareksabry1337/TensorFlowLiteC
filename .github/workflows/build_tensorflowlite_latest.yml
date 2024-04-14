@@ -16,13 +16,34 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         
+      - name: Build TensorFlowLiteC/TensorFlowLiteCCoreML on Simulator
+        run: |
+          cd ${{ github.workspace }}/App
+
+          pod install
+
+          bash ../Scripts/check_tensorflow_version.sh
+
+          cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
+          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
+          
+          cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteCCoreML.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteCCoreML.framework ${{ github.workspace }}/TensorFlowLiteCCoreML/Simulator
+          cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Simulator/TensorFlowLiteCCoreML.framework/Info.plist
+          
+          grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
+
+          echo "RELEASE_VERSION=$(cat last_synced_version.txt)" >> $GITHUB_ENV
+
+          git add last_synced_version.txt
+          git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
+          
       - name: Clone TensorFlow Repository
         uses: actions/checkout@v4
         with:
           repository: 'tensorflow/tensorflow'
           path: '${{ github.workspace }}/tensorflow'
           fetch-tags: true
-          fetch-depth: '0'
+          ref: 'v${{ env.RELEASE_VERSION }}'
           
       - name: Setup Bazel Version
         run: |
@@ -69,32 +90,10 @@ jobs:
           mkdir -p TensorFlowLiteCCoreML/Device
           mkdir -p TensorFlowLiteCCoreML/Simulator
           
-      - name: Build TensorFlowLiteC/TensorFlowLiteCCoreML on Simulator
-        run: |
-          cd ${{ github.workspace }}/App
-
-          pod install
-
-          bash ../Scripts/check_tensorflow_version.sh
-
-          cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
-          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
-          
-          cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteCCoreML.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteCCoreML.framework ${{ github.workspace }}/TensorFlowLiteCCoreML/Simulator
-          cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Simulator/TensorFlowLiteCCoreML.framework/Info.plist
-          
-          grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
-
-          echo "RELEASE_VERSION=$(cat last_synced_version.txt)" >> $GITHUB_ENV
-
-          git add last_synced_version.txt
-          git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
-          
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
-          git checkout v${{ env.RELEASE_VERSION }}
-          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
+          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
           unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
@@ -102,9 +101,8 @@ jobs:
       - name: Build TensorFlowLiteCCoreML on Device
         run: |
           cd ${{ github.workspace }}/
-          git checkout v${{ env.RELEASE_VERSION }}
           git apply ../build_coreml_statically.patch
-          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework 2>&1 >/dev/null)
+          build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
           unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteCCoreML/Device
           cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Device/TensorFlowLiteCCoreML.framework/Info.plist
