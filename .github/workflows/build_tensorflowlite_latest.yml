@@ -16,6 +16,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         
+      - name: Prepare XCFramework Directory
+        run: |
+          cd ${{ github.workspace }}
+          mkdir -p TensorFlowLiteC/Device
+          mkdir -p TensorFlowLiteC/Simulator
+          mkdir -p TensorFlowLiteCCoreML/Device
+          mkdir -p TensorFlowLiteCCoreML/Simulator
+          
       - name: Build TensorFlowLiteC/TensorFlowLiteCCoreML on Simulator
         run: |
           cd ${{ github.workspace }}/App
@@ -81,14 +89,6 @@ jobs:
             send "y\r"
             interact
           '
-          
-      - name: Prepare Framework Directory
-        run: |
-          cd ${{ github.workspace }}
-          mkdir -p TensorFlowLiteC/Device
-          mkdir -p TensorFlowLiteC/Simulator
-          mkdir -p TensorFlowLiteCCoreML/Device
-          mkdir -p TensorFlowLiteCCoreML/Simulator
           
       - name: Build TensorFlowLiteC on Device
         run: |
