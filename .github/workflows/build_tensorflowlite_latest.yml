@@ -100,7 +100,7 @@ jobs:
           
       - name: Build TensorFlowLiteCCoreML on Device
         run: |
-          cd ${{ github.workspace }}/
+          cd ${{ github.workspace }}/tensorflow
           git apply ../build_coreml_statically.patch
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework 2>&1 >/dev/null)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\_framework.zip')
