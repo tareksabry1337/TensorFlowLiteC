@@ -21,15 +21,13 @@ jobs:
             fetch-tags: true
         
       - name: Check if Tag Exists and Build
-        run: |
-          if git rev-parse "refs/tags/${{ github.event.inputs.release_version }}" >/dev/null 2>&1; then
-            echo "Tag exists for ${{ github.event.inputs.release_version }}. Exiting early."
-            exit 0
-          else
-            echo "Tag for ${{ github.event.inputs.release_version }} does not exist. Proceeding with build..."
-          fi
+        uses: mukunku/tag-exists-action@v1.6.0
+          id: check-tag
+          with:
+            tag: ${{ github.event.inputs.release_version }}
         
       - name: Prepare XCFramework Directory
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}
           mkdir -p TensorFlowLiteC/Device
@@ -38,6 +36,7 @@ jobs:
           mkdir -p TensorFlowLiteCCoreML/Simulator
           
       - name: Build TensorFlowLiteC/TensorFlowLiteCCoreML on Simulator
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}/App
           
@@ -53,6 +52,7 @@ jobs:
           cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Simulator/TensorFlowLiteCCoreML.framework/Info.plist
           
       - name: Clone TensorFlow Repository
+        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/checkout@v4
         with:
           repository: 'tensorflow/tensorflow'
@@ -61,10 +61,12 @@ jobs:
           ref: 'v${{ github.event.inputs.release_version }}'
           
       - name: Setup Bazel Version
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           echo "USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)" >> $GITHUB_ENV
           
       - name: Set up Bazel
+        if: steps.check-tag.outputs.exists == 'false'
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
@@ -73,9 +75,11 @@ jobs:
           cache-version: 5
           
       - name: Install expect
+        if: steps.check-tag.outputs.exists == 'false'
         run: brew install expect
         
       - name: Configure TensorFlow
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}/tensorflow
           expect -c '
@@ -98,6 +102,7 @@ jobs:
           '
           
       - name: Build TensorFlowLiteC on Device
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}/tensorflow
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
@@ -106,6 +111,7 @@ jobs:
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
           
       - name: Build TensorFlowLiteCCoreML on Device
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}/tensorflow
           git apply ../build_coreml_statically.patch
@@ -115,6 +121,7 @@ jobs:
           cp ${{ github.workspace }}/Info-TensorFlowLiteCCoreML.plist ${{ github.workspace }}/TensorFlowLiteCCoreML/Device/TensorFlowLiteCCoreML.framework/Info.plist
           
       - name: Create XCFramework
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cd ${{ github.workspace }}/TensorFlowLiteC
           
@@ -141,6 +148,7 @@ jobs:
           echo "TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM=$(xcrun swift package compute-checksum TensorFlowLiteCCoreML.xcframework.zip)" >> $GITHUB_ENV
           
       - name: Upload Release
+        if: steps.check-tag.outputs.exists == 'false'
         uses: svenstaro/upload-release-action@v2
         with:
           file_glob: true
@@ -149,6 +157,7 @@ jobs:
           overwrite: true
           
       - name: Get API URL
+        if: steps.check-tag.outputs.exists == 'false'
         env:
           GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
@@ -158,6 +167,7 @@ jobs:
           echo "TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$TENSOR_FLOW_LITE_C_CORE_ML_API_URL.zip" >> $GITHUB_ENV
           
       - name: Update Package.swift
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           cp -f Package.swift.in Package.swift
           sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_API_URL }}|g" Package.swift
