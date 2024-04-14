@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      
+permissions:
+  contents: write
 
 jobs:
   clone_and_build:
@@ -91,6 +94,7 @@ jobs:
           -output ${{ github.workspace }}/TensorFlowLiteC.xcframework
           cd ${{ github.workspace }}
           zip -r TensorFlowLiteC.xcframework.zip TensorFlowLiteC.xcframework
+          touch Package.swift
           echo "CHECKSUM=$(xcrun swift package compute-checksum TensorFlowLiteC.xcframework.zip)" >> $GITHUB_ENV
           
       - name: Upload Release
