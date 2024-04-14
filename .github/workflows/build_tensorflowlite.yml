@@ -12,7 +12,9 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
         
       - name: Clone TensorFlow Repository
         run: git clone https://github.com/tensorflow/tensorflow ${{ github.workspace }}/tensorflow
@@ -67,6 +69,7 @@ jobs:
           cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
           grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
+          echo "RELEASE_VERSION=$(cat last_synced_version.txt)" >> $GITHUB_ENV
           git add last_synced_version.txt
           git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
           # git push
@@ -78,5 +81,28 @@ jobs:
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
           unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
-          find ${{ github.workspace }}/TensorFlowLiteC -type f
+          
+      - name: Create XCFramework
+        run: |
+          cd ${{ github.workspace }}/TensorFlowLiteC
+          xcodebuild -create-xcframework \
+          -framework ./Device/TensorFlowLiteC.framework \
+          -framework ./Simulator/TensorFlowLiteC.framework \
+          -output ${{ github.workspace }}/TensorFlowLiteC.xcframework
+          cd ${{ github.workspace }}
+          zip -r TensorFlowLiteC.xcframework.zip TensorFlowLiteC.xcframework
+          echo "CHECKSUM=$(xcrun swift package compute-checksum TensorFlowLiteC.xcframework.zip)" >> $GITHUB_ENV
+          
+      - name: Upload Release
+        id: upload-release-asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: TensorFlowLiteC.xcframework.zip
+          tag: ${{ env.RELEASE_VERSION }}
+          asset_name: TensorFlowLiteC.xcframework.zip
+          overwrite: false
+          
+      - name: Get Browser Download URL
+        run: echo "The browser download URL is ${{ steps.upload-release-asset.outputs.browser_download_url }}"
+      
 
