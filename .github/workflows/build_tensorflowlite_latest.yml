@@ -32,7 +32,23 @@ jobs:
 
           pod install
 
-          bash ../Scripts/check_tensorflow_version.sh
+          if [ -f "last_synced_version.txt" ]; then
+              saved_version=$(cat last_synced_version.txt)
+              echo "Saved TensorFlowLite version: $saved_version"
+          
+              current_version=$(get_tensorflowlite_version)
+              echo "Current TensorFlowLite version: $current_version"
+          
+              # Compare versions
+              if [ "$saved_version" = "$current_version" ]; then
+                  echo "TensorFlowLite version is up to date. Exiting early."
+                  exit 0
+              else
+                  echo "TensorFlowLite version has changed. Continuing..."
+              fi
+          else
+              echo "last_synced_version.txt not found. Proceeding with the installation."
+          fi
 
           cp -R Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
@@ -46,9 +62,6 @@ jobs:
 
           git add last_synced_version.txt
           git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
-          
-      - name: Check Script Exit Status
-        run: exit $?
           
       - name: Clone TensorFlow Repository
         uses: actions/checkout@v4
