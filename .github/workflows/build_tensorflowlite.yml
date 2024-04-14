@@ -63,7 +63,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/App
           pod install
-          bash ../Scripts/check_tensorflowlite_version.sh
+          bash ../Scripts/check_tensorflow_version.sh
           cp Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
           cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
           grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
