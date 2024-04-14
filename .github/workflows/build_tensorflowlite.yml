@@ -110,7 +110,9 @@ jobs:
             -framework ./Device/TensorFlowLiteC.framework \
             -framework ./Simulator/TensorFlowLiteC.framework \
             -output ${{ github.workspace }}/TensorFlowLiteC.xcframework
-            
+          
+          cd ${{ github.workspace }}/TensorFlowLiteCCoreML
+          
           xcodebuild -create-xcframework \
             -framework ./Device/TensorFlowLiteCCoreML.framework \
             -framework ./Simulator/TensorFlowLiteCCoreML.framework \
