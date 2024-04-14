@@ -148,10 +148,10 @@ jobs:
       - name: Update Package.swift
         run: |
           cp -f Package.template.swift Package.swift
-          sed -i "s|{{TENSOR_FLOW_LITE_C_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_API_URL }}|g" Package.swift
-          sed -i "s|{{TENSOR_FLOW_LITE_C_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CHECKSUM }}|g" Package.swift
-          sed -i "s|{{TENSOR_FLOW_LITE_C_CORE_ML_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_API_URL }}|g" Package.swift
-          sed -i "s|{{TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}|g" Package.swift
+          sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_API_URL }}|g" Package.swift
+          sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CHECKSUM }}|g" Package.swift
+          sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_CORE_ML_API_URL}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_API_URL }}|g" Package.swift
+          sed -i '' -e "s|{{TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM}}|${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}|g" Package.swift
           git add Package.swift
           git commit -m "Update Package.swift"
           git push
