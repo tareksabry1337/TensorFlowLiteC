@@ -73,6 +73,7 @@ jobs:
           ref: 'v${{ env.RELEASE_VERSION }}'
           
       - name: Setup Bazel Version
+        if: env.RELEASE_VERSION
         run: |
           echo "USE_BAZEL_VERSION=$(head -n 1 ${{ github.workspace }}/tensorflow/.bazelversion)" >> $GITHUB_ENV
           
