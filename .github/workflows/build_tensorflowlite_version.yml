@@ -1,4 +1,4 @@
-name: Build TensorFlowLiteC
+name: Build Specific TensorFlowLiteC Version
 
 on:
   workflow_dispatch:

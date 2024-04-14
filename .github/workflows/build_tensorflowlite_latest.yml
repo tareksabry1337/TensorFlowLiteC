@@ -1,4 +1,4 @@
-name: Build TensorFlowLiteC
+name: Build Latest TensorFlowLiteC Version
 
 on:
   schedule:
@@ -46,6 +46,9 @@ jobs:
 
           git add last_synced_version.txt
           git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
+          
+      - name: Check Script Exit Status
+        run: exit $?
           
       - name: Clone TensorFlow Repository
         uses: actions/checkout@v4
