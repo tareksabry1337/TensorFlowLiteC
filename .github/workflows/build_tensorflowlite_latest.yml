@@ -36,7 +36,7 @@ jobs:
               saved_version=$(cat last_synced_version.txt)
               echo "Saved TensorFlowLite version: $saved_version"
           
-              current_version=$(get_tensorflowlite_version)
+              current_version=$(grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1')
               echo "Current TensorFlowLite version: $current_version"
           
               # Compare versions
