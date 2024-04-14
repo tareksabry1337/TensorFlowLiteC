@@ -86,34 +86,12 @@ jobs:
           repository-cache: true
           cache-version: 5
           
-      - name: Install expect
-        if: env.USE_BAZEL_VERSION
-        run: brew install expect
-        
       - name: Configure TensorFlow
         if: env.USE_BAZEL_VERSION
         run: |
           cd ${{ github.workspace }}/tensorflow
-          expect -c '
-              spawn ./configure
-              set ios_support_answered 0
-              expect {
-                  "Do you wish to build TensorFlow with iOS support*" {
-                      if {$ios_support_answered == 0} {
-                          send "y\r"
-                          set ios_support_answered 1
-                      }
-                      exp_continue
-                  }
-                  -re ".+" {
-                      send "\r"
-                      exp_continue
-                  }
-                  eof {
-                      exit
-                  }
-              }
-          '
+          git apply ../automatically_answer_configure_questions.patch
+          python configure.py
           
       - name: Build TensorFlowLiteC on Device
         if: env.USE_BAZEL_VERSION

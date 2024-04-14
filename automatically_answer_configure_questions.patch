@@ -1,0 +1,16 @@
+diff --git a/configure.py b/configure.py
+index dae3dce89d3..06b89da93ea 100644
+--- a/configure.py
++++ b/configure.py
+@@ -95,7 +95,10 @@ def get_input(question):
+     try:
+       answer = raw_input(question)
+     except NameError:
+-      answer = input(question)  # pylint: disable=bad-builtin
++      if "iOS" in question:
++        answer = 'y'
++      else:
++        answer = ''  # pylint: disable=bad-builtin
+   except EOFError:
+     answer = ''
+   return answer
