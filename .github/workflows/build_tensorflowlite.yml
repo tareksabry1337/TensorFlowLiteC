@@ -146,3 +146,4 @@ jobs:
           echo ${{ env.TENSOR_FLOW_LITE_C_CHECKSUM }}
           echo $TENSOR_FLOW_LITE_C_CORE_ML_API_URL.zip
           echo ${{ env.TENSOR_FLOW_LITE_C_CORE_ML_CHECKSUM }}
+          echo Done
