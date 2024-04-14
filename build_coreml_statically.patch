@@ -1,0 +1,18 @@
+diff --git a/tensorflow/lite/ios/BUILD.apple b/tensorflow/lite/ios/BUILD.apple
+index 66d51b14f85..09fe482499c 100644
+--- a/tensorflow/lite/ios/BUILD.apple
++++ b/tensorflow/lite/ios/BUILD.apple
+@@ -220,12 +220,11 @@ ios_static_framework(
+ # TensorFlowLiteC framework above in a composable way.
+ #
+ # bazel build -c opt --config=ios_fat //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework
+-tflite_ios_framework(
++ios_static_framework(
+     name = "TensorFlowLiteCCoreML_framework",
+     hdrs = [
+         ":coreml_delegate.h",
+     ],
+-    allowlist_symbols_file = ":allowlist_TensorFlowLiteCCoreML.txt",
+     bundle_name = "TensorFlowLiteCCoreML",
+     minimum_os_version = TFL_MINIMUM_OS_VERSION,
+     deps = [
