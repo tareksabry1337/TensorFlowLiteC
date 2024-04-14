@@ -53,19 +53,29 @@ jobs:
             send "y\r"
             interact
           '
-        
+      - name: Prepare Framework Directory
+        run: |
+          cd ${{ github.workspace }}
+          mkdir -p TensorFlowLiteC/Device
+          mkdir -p TensorFlowLiteC/Simulator
+          
       - name: Build TensorFlowLiteC on Simulator
         run: |
-          cd ${{ github.workspace }}/tensorflow
-          bazel --version
+          cd ${{ github.workspace }}/App
+          pod install
+          bash ../Scripts/check_tensorflowlite_version.sh
+          cp Pods/TensorFlowLiteC/Frameworks/TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework ${{ github.workspace }}/TensorFlowLiteC/Simulator
+          cp ${{ github.workspace }}/Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Simulator/TensorFlowLiteC.framework/Info.plist
+          grep -A 2 "TensorFlowLite" Podfile.lock | grep -o '\b[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}\b' | awk 'NR==1' > last_synced_version.txt
+          git add last_synced_version.txt
+          git commit -m "Update TensorFlowLiteC to $(cat last_synced_version.txt)"
 
       - name: Build TensorFlowLiteC on Device
         run: |
           cd ${{ github.workspace }}/tensorflow
           build_output=$(bazel build --config=ios --ios_multi_cpus="arm64" -c opt --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteC_static_framework 2>&1 >/dev/null)
           zip_file=$(echo "$build_output" | grep -o '[^ ]*\.zip')
-          unzip -o $zip_file -d ${{ github.workspace }}
-          cd ${{ github.workspace }}
-          cp Info-TensorFlowLiteC.plist TensorFlowLiteC.framework/Info.plist
-          cd TensorFlowLiteC.framework && ls
+          unzip -o $zip_file -d ${{ github.workspace }}/TensorFlowLiteC/Device
+          cp Info-TensorFlowLiteC.plist ${{ github.workspace }}/TensorFlowLiteC/Device/TensorFlowLiteC.framework/Info.plist
+          find ${{ github.workspace }}/TensorFlowLiteC -type f
 
