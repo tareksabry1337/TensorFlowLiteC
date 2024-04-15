@@ -95,7 +95,7 @@ jobs:
           
       - name: Install distutils
         run: |
-          pip install setuptools
+          pip install setuptools && pip install numpy
           
       - name: Build TensorFlowLiteC on Device
         if: env.USE_BAZEL_VERSION
