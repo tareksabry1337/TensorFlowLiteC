@@ -157,8 +157,8 @@ jobs:
         env:
           GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
-          TENSOR_FLOW_LITE_C_API_URL=$(gh release view 2.14.0 --json assets -q '.assets[] | select (.name == "TensorFlowLiteC.xcframework.zip").apiUrl')
-          TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$(gh release view 2.14.0 --json assets -q '.assets[] | select (.name == "TensorFlowLiteCCoreML.xcframework.zip").apiUrl')
+          TENSOR_FLOW_LITE_C_API_URL=$(gh release view ${{ env.RELEASE_VERSION }} --json assets -q '.assets[] | select (.name == "TensorFlowLiteC.xcframework.zip").apiUrl')
+          TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$(gh release view ${{ env.RELEASE_VERSION }} --json assets -q '.assets[] | select (.name == "TensorFlowLiteCCoreML.xcframework.zip").apiUrl')
           echo "TENSOR_FLOW_LITE_C_API_URL=$TENSOR_FLOW_LITE_C_API_URL.zip" >> $GITHUB_ENV
           echo "TENSOR_FLOW_LITE_C_CORE_ML_API_URL=$TENSOR_FLOW_LITE_C_CORE_ML_API_URL.zip" >> $GITHUB_ENV
           
