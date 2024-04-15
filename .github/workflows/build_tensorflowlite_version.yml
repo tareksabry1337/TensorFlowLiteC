@@ -85,6 +85,7 @@ jobs:
           python configure.py
           
       - name: Install dependencies
+        if: steps.check-tag.outputs.exists == 'false'
         run: |
           pip install setuptools && pip install numpy
           
@@ -165,5 +166,5 @@ jobs:
           git add Package.swift
           git commit -m "Update Package.swift"
           git push -u origin release-${{ github.event.inputs.release_version }}
-          git tag -m "Update release commit" -f -a ${{ env.RELEASE_VERSION }} $(git rev-parse origin/release-${{ github.event.inputs.release_version }})
-          git push -f origin refs/tags/${{ env.RELEASE_VERSION }}
+          git tag -m "Update release commit" -f -a ${{ github.event.inputs.release_version }} $(git rev-parse origin/release-${{ github.event.inputs.release_version }})
+          git push -f origin refs/tags/${{ github.event.inputs.release_version }}
