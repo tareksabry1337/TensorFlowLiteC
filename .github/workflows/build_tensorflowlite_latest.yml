@@ -151,6 +151,7 @@ jobs:
           file: '*.zip'
           tag: ${{ env.RELEASE_VERSION }}
           overwrite: true
+          make_latest: true
           
       - name: Get API URL
         if: env.USE_BAZEL_VERSION

@@ -144,6 +144,7 @@ jobs:
           file: '*.zip'
           tag: ${{ github.event.inputs.release_version }}
           overwrite: true
+          make_latest: false
           
       - name: Get API URL
         if: steps.check-tag.outputs.exists == 'false'
