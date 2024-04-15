@@ -84,6 +84,10 @@ jobs:
           git apply ../automatically_answer_configure_questions.patch
           python configure.py
           
+      - name: Install distutils
+        run: |
+          pip install setuptools
+          
       - name: Build TensorFlowLiteC on Device
         if: steps.check-tag.outputs.exists == 'false'
         run: |
