@@ -141,7 +141,7 @@ jobs:
         with:
           file_glob: true
           file: '*.zip'
-          tag: ${{ env.RELEASE_VERSION }}
+          tag: ${{ github.event.inputs.release_version }}
           overwrite: true
           
       - name: Get API URL
