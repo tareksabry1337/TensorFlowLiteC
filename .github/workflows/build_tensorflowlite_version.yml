@@ -84,6 +84,11 @@ jobs:
           git apply ../automatically_answer_configure_questions.patch
           python configure.py
           
+      - name: Install distutils
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          pip install setuptools && pip install numpy
+          
       - name: Install dependencies
         if: steps.check-tag.outputs.exists == 'false'
         run: |

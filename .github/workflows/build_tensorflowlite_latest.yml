@@ -94,6 +94,7 @@ jobs:
           python configure.py
           
       - name: Install distutils
+        if: env.RELEASE_VERSION
         run: |
           pip install setuptools && pip install numpy
           
