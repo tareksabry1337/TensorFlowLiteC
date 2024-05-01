@@ -133,11 +133,11 @@ jobs:
 
           cd ${{ github.workspace }}
           
-          cp TensorFlowLiteC.xcprivacy TensorFlowLiteC.xcframework/ios-arm64/TensorFlowLiteC.framework/TensorFlowLiteC.xcprivacy
-          cp TensorFlowLiteC.xcprivacy TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework/TensorFlowLiteC.xcprivacy
+          cp TensorFlowLiteC.xcprivacy TensorFlowLiteC.xcframework/ios-arm64/TensorFlowLiteC.framework/PrivacyInfo.xcprivacy
+          cp TensorFlowLiteC.xcprivacy TensorFlowLiteC.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteC.framework/PrivacyInfo.xcprivacy
           
-          cp TensorFlowLiteCCoreML.xcprivacy TensorFlowLiteCCoreML.xcframework/ios-arm64/TensorFlowLiteCCoreML.framework/TensorFlowLiteC.xcprivacy
-          cp TensorFlowLiteCCoreML.xcprivacy TensorFlowLiteCCoreML.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteCCoreML.framework/TensorFlowLiteC.xcprivacy
+          cp TensorFlowLiteCCoreML.xcprivacy TensorFlowLiteCCoreML.xcframework/ios-arm64/TensorFlowLiteCCoreML.framework/PrivacyInfo.xcprivacy
+          cp TensorFlowLiteCCoreML.xcprivacy TensorFlowLiteCCoreML.xcframework/ios-arm64_x86_64-simulator/TensorFlowLiteCCoreML.framework/PrivacyInfo.xcprivacy
 
           zip -r TensorFlowLiteC.xcframework.zip TensorFlowLiteC.xcframework
           zip -r TensorFlowLiteCCoreML.xcframework.zip TensorFlowLiteCCoreML.xcframework
