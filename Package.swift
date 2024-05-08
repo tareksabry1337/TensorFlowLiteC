@@ -23,13 +23,13 @@ let package = Package(
         ),
         .binaryTarget(
             name: "TensorFlowLiteC",
-            url: "https://api.github.com/repos/tareksabry1337/TensorFlowLiteC/releases/assets/166710566.zip",
-            checksum: "c80bac956eccbd7dfd5aa121530f3277db137d06fc858816ea07356e06ead399"
+            url: "https://api.github.com/repos/tareksabry1337/TensorFlowLiteC/releases/assets/166723986.zip",
+            checksum: "1617d8755979a8bac573096324588ca47a46bf4787f481efcdf7d3d871f0cbaf"
         ),
         .binaryTarget(
             name: "TensorFlowLiteCCoreML",
-            url: "https://api.github.com/repos/tareksabry1337/TensorFlowLiteC/releases/assets/166710559.zip",
-            checksum: "38ec59993db37aa27ed636fab6d3f9bbddd84fae5dd0757df71d6157470dfa23"
+            url: "https://api.github.com/repos/tareksabry1337/TensorFlowLiteC/releases/assets/166723973.zip",
+            checksum: "675a18a3e2186ac7eae37ee0975810a8b7c9c6523035a9379882f173707b7534"
         )
     ]
 )
